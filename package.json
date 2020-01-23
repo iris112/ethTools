@@ -1,0 +1,17 @@
+{
+  "name": "eth-tools",
+  "description": "",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "main": "MODE=main INFURA_API_KEY=21d44f97cb3f4f2e8c113c76d05bbf77 node contract.js",
+    "ropsten": "MODE=ropsten INFURA_API_KEY=21d44f97cb3f4f2e8c113c76d05bbf77 node contract.js",
+    "start": "node contract.js"
+  },
+  "dependencies": {
+    "bignumber": "^1.1.0",
+    "ethereumjs-tx": "^2.1.2",
+    "ganache-cli": "^6.8.1",
+    "web3": "^1.2.4"
+  }
+}

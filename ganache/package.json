@@ -1,0 +1,11 @@
+{
+  "name": "ganache",
+  "description": "",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+  },
+  "scripts": {
+    "start": "node ../node_modules/ganache-cli/cli --networkId 50 -p 8545 --db ./snapshot -m \"concert load couple harbor equip island argue ramp clarify fence smart topic\""
+  }
+}
