@@ -26,8 +26,8 @@ if (process.env.MODE === "main") {
     ethWContractAddress = '';
     baseUrl = 'https://mainnet.infura.io/v3/' +  process.env.INFURA_API_KEY;
 
-    ownerAddress = '0x0FE1829403d422470cd4cf0aBAd4bCEc9aA2eBF6';
-    ownerPrivateKey = '75dfcedfefce284ba566e11dc193f21aa196c464bf6b20bba288aa99aebde9ba';
+    ownerAddress = '';
+    ownerPrivateKey = '';
 
     if (process.env.TRADER === "1") {
         address = '';
@@ -42,15 +42,15 @@ if (process.env.MODE === "main") {
     ethWContractAddress = '0xbd40ae7049f2f12c7c8cead00781c2993e88f940';
     baseUrl = 'https://ropsten.infura.io/v3/' +  process.env.INFURA_API_KEY;
 
-    ownerAddress = '0x0FE1829403d422470cd4cf0aBAd4bCEc9aA2eBF6';
-    ownerPrivateKey = '75dfcedfefce284ba566e11dc193f21aa196c464bf6b20bba288aa99aebde9ba';
+    ownerAddress = '';
+    ownerPrivateKey = '';
 
     if (process.env.TRADER === "1") {
-        address = '0x0FE1829403d422470cd4cf0aBAd4bCEc9aA2eBF6';
-        privateKey = '75dfcedfefce284ba566e11dc193f21aa196c464bf6b20bba288aa99aebde9ba';
+        address = '';
+        privateKey = '';
     } else {
-        address = '0x0FE1829403d422470cd4cf0aBAd4bCEc9aA2eBF6';
-        privateKey = '75dfcedfefce284ba566e11dc193f21aa196c464bf6b20bba288aa99aebde9ba';
+        address = '';
+        privateKey = '';
     }
 } else {
     baseUrl = 'http://localhost:8545';
