@@ -1,6 +1,45 @@
 # eth - tools
 
 
+## Questions and Issues
+
+### Interacting with OMGW contract (e.g. using deposit) does not seem to work.  I get the following error: "VM Exception while processing transaction: revert"
+I'm not sure where the issue is but I need your help to find out. You can check if I'm using the right abi, contract byte code, etc for OMGW and also if I'm sending the right parameters.
+Here is a sample mainnet contract call:
+https://etherscan.io/tx/0xe4c955972e302e615f949deb031f241482c697a6438362170680d800f43ae654
+
+My workflow is:
+1- deploy all contracts 
+2- mint some OMG (to owner)
+3- transfer some OMG from owner to trader1
+4- trader1 approves using OMG contract using OMGW as the spender 
+5- call deposit for OMGW contract (trader1 send transaction to OMGW contract, send some OMG )         
+
+### GAS estimation 
+I can see you are multiplying contract.estimateGas() by 1.5 to calculate gas price. Is there any reason for this?
+ and what'd be a good strategy for production? 
+I understand this may fall into gas optimization topics but any starting point would be helpful.   
+
+
+### Producing byte code for existing contracts 
+In first phase of our project we will be using several existing contracts and we need local copy of them. 
+The code of those contracts are identical to mainnet but in some cases we have to change parameters (e.g. inside OMGW we change ZEROX address).
+this means we need to recompile the contract code and produce byte code so we can deploy it locally. 
+
+I have used Remix to do this. Is there a better way of re-producing the contract byte code after some small changes.
+
+### calling approve second time
+If I call the approve method first time it works. But second time it creates this error:
+VM Exception while processing transaction: revert
+
+Do you know what this issue is and what's the good practice to troubleshoot those errors. (getting more information about the error)
+
+### MetaMask integration 
+I'm using local ganache and I connect Metamask to use the same network.
+I can see my ETH balances for owner and trader 1 accounts but adding OMG (as a token) does not seem to work (it works for mainnet and ropsten contracts)   
+
+
+
 ## Intro   
 This project aims to setup development environment in order to integrate with ZeroX contracts and also a few other DEX smart contracts including the ones from Bitfinex
  
