@@ -54,9 +54,9 @@ if (process.env.MODE === "main") {
     }
 } else {
     baseUrl = 'http://localhost:8545';
-    omgContractAddress =  '0xF23276778860e420aCFc18ebeEBF7E829b06965c';
-    omgWContractAddress = '0x8A063452f7dF2614Db1bCa3A85eF35DA40cF0835';
-    ethWContractAddress = '0x59adefa01843C627BA5d6Aa350292b4B7cCAE67a';   
+    omgContractAddress =  '0xF96b018E8dE3A229DbaCed8439DF9e3034e263c1';
+    omgWContractAddress = '0xD8Ca39d276c05a370174CE872b7278FcF734afaC';
+    ethWContractAddress = '0x609aCc8b356894a937fC58F3411F9528de96EcB1';
 
     ownerAddress = '0x5409ED021D9299bf6814279A6A1411A7e866A631'; // accounts[0] in dev ganache
     ownerPrivateKey = 'f2f48ee19680706196e2e339e5da3491186e0c4c5030670656b0e0164837257d';
@@ -380,12 +380,12 @@ async function deployAllContract() {
 async function start() {
     /* -------- ERC20 methods -------*/
     // mint
-    // let txHash = await mint('tokens/OMG.json', omgContractAddress, address, 300);
-    // console.log(txHash);
+    //let txHash = await mint('tokens/OMG.json', omgContractAddress, address, 30000);
+     //console.log(txHash);
 
     // transfer
-    // let txHash = await transfer('tokens/OMG.json', omgContractAddress, ownerAddress, 30);
-    // console.log(txHash);
+     //let txHash = await transfer('tokens/OMG.json', omgContractAddress, ownerAddress, 30);
+     //console.log(txHash);
 
     // tootalSupply
     // let supply = await totalSupply('tokens/OMG.json', omgContractAddress, ownerAddress);
@@ -405,8 +405,8 @@ async function start() {
     // console.log(txHash);
 
     // deposite
-    // let txHash = await deposit('tokens/ETHW.json', ethWContractAddress, 0.02e18, 24);
-    // console.log(txHash);
+    let txHash = await deposit('tokens/OMGW.json', omgWContractAddress, 0.02e18, 24);
+     console.log(txHash);
 
     // withdraw
     // let txHash = await withdraw('tokens/ETHW.json', ethWContractAddress, 
@@ -415,5 +415,5 @@ async function start() {
     // console.log(txHash);
 }
 
-// deployAllContract();
+ //deployAllContract();
 start();
