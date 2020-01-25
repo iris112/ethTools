@@ -26,8 +26,8 @@ if (process.env.MODE === "main") {
     ethWContractAddress = '';
     baseUrl = 'https://mainnet.infura.io/v3/' +  process.env.INFURA_API_KEY;
 
-    ownerAddress = '';
-    ownerPrivateKey = '';
+    ownerAddress = '0x0FE1829403d422470cd4cf0aBAd4bCEc9aA2eBF6';
+    ownerPrivateKey = '75dfcedfefce284ba566e11dc193f21aa196c464bf6b20bba288aa99aebde9ba';
 
     if (process.env.TRADER === "1") {
         address = '';
@@ -55,7 +55,7 @@ if (process.env.MODE === "main") {
 } else {
     baseUrl = 'http://localhost:8545';
     omgContractAddress =  '0xF23276778860e420aCFc18ebeEBF7E829b06965c';
-    omgWContractAddress = '0x8A063452f7dF2614Db1bCa3A85eF35DA40cF0835';
+    omgWContractAddress = '0x72D5A2213bfE46dF9FbDa08E22f536aC6Ca8907e';
     ethWContractAddress = '0x59adefa01843C627BA5d6Aa350292b4B7cCAE67a';   
 
     ownerAddress = '0x5409ED021D9299bf6814279A6A1411A7e866A631'; // accounts[0] in dev ganache
@@ -160,15 +160,15 @@ async function getNonce(address) {
     return count;
 }
 
-async function approve(contractFile, contractAddress, spenderAddress, amount) {
+async function approve(contractFile, contractAddress, fromAddress, fromPrivKey, spenderAddress, amount) {
     try {
-        const count = await getNonce(address);
-        const privateKeyBytes = new Buffer.from(privateKey, 'hex');
+        const count = await getNonce(fromAddress);
+        const privateKeyBytes = new Buffer.from(fromPrivKey, 'hex');
         const obj = JSON.parse(fs.readFileSync(contractFile, 'utf8'));
         const contract = new web3.eth.Contract(obj.abi, contractAddress, {
-            from: address
+            from: fromAddress
         }).methods.approve(spenderAddress, web3.utils.toHex(amount));
-        const gasLimit = parseInt(await contract.estimateGas({from: address}) * 1.5);
+        const gasLimit = parseInt(await contract.estimateGas({from: fromAddress}) * 1.5);
         const gasPrice = parseInt(await web3.eth.getGasPrice() * 1.5);
         var rawTransaction = {
             "from":address,
@@ -198,21 +198,21 @@ async function approve(contractFile, contractAddress, spenderAddress, amount) {
     }
 }
 
-async function deposit(contractFile, contractAddress, amountToDeposit, duration) {
+async function deposit(contractFile, contractAddress, fromAddress, fromPrivKey, amountToDeposit, duration) {
     try {
-        const count = await getNonce(address);
-        const privateKeyBytes = new Buffer.from(privateKey, 'hex');
+        const count = await getNonce(fromAddress);
+        const privateKeyBytes = new Buffer.from(fromPrivKey, 'hex');
         const obj = JSON.parse(fs.readFileSync(contractFile, 'utf8'));
         const contract = new web3.eth.Contract(obj.abi, contractAddress, {
-            from: address
+            from: fromAddress
         }).methods.deposit(
             web3.utils.toHex(amountToDeposit), 
             web3.utils.toHex(duration));
 
-        const gasLimit = parseInt(await contract.estimateGas({from: address}) * 1.5);
+        const gasLimit = parseInt(await contract.estimateGas({from: fromAddress}) * 1.5);
         const gasPrice = parseInt(await web3.eth.getGasPrice() * 1.5);
         var rawTransaction = {
-            "from":address,
+            "from":fromAddress,
             "gasPrice":web3.utils.toHex(gasPrice),
             "gasLimit":web3.utils.toHex(gasLimit),
             "to":contractAddress,
@@ -304,7 +304,7 @@ async function mint(contractFile, contractAddress, mintToAddress, amount) {
         var rawTransaction = {
             "from":ownerAddress,
             "gasPrice":web3.utils.toHex(gasPrice),
-            "gasLimit":web3.utils.toHex(2100000),
+            "gasLimit":web3.utils.toHex(gasLimit),
             "to":contractAddress,
             "value":"0x0",
             "data":contract.encodeABI(),
@@ -329,19 +329,19 @@ async function mint(contractFile, contractAddress, mintToAddress, amount) {
     }
 }
 
-async function transfer(contractFile, contractAddress, toAddress, amountToTransfer) {
+async function transfer(contractFile, contractAddress, fromAddress, fromPrivKey, toAddress, amountToTransfer) {
     try {
-        const count = await getNonce(address);
-        const privateKeyBytes = new Buffer.from(privateKey, 'hex');
+        const count = await getNonce(fromAddress);
+        const privateKeyBytes = new Buffer.from(fromPrivKey, 'hex');
         const obj = JSON.parse(fs.readFileSync(contractFile, 'utf8'));
         const contract = new web3.eth.Contract(obj.abi, contractAddress, {
-            from: address
+            from: fromAddress
         }).methods.transfer(toAddress, amountToTransfer);
 
-        const gasLimit = parseInt(await contract.estimateGas({from: address}) * 1.5);
+        const gasLimit = parseInt(await contract.estimateGas({from: fromAddress}) * 1.5);
         const gasPrice = parseInt(await web3.eth.getGasPrice() * 1.5);
         var rawTransaction = {
-            "from":address,
+            "from":fromAddress,
             "gasPrice":web3.utils.toHex(gasPrice),
             "gasLimit":web3.utils.toHex(gasLimit),
             "to":contractAddress,
@@ -371,7 +371,7 @@ async function transfer(contractFile, contractAddress, toAddress, amountToTransf
 async function deployAllContract() {
     const omgContractAddress = await deployContract('tokens/OMG.json', []);
     console.log('OMG ContractAddress = ', omgContractAddress);
-    const omgWContractAddress = await deployContract('tokens/OMGW.json', ['0x5409ED021D9299bf6814279A6A1411A7e866A631', 'omg', 'OMG', 18, false]);
+    const omgWContractAddress = await deployContract('tokens/OMGW.json', [omgContractAddress, 'omg', 'OMG', 18, true]);
     console.log('OMGW ContractAddress = ', omgWContractAddress);
     const ethWContractAddress = await deployContract('tokens/ETHW.json', ['ethw', 'ETHW', 18]);
     console.log('ETHW ContractAddress = ', ethWContractAddress);
@@ -380,11 +380,11 @@ async function deployAllContract() {
 async function start() {
     /* -------- ERC20 methods -------*/
     // mint
-    // let txHash = await mint('tokens/OMG.json', omgContractAddress, address, 300);
+    // let txHash = await mint('tokens/OMG.json', omgContractAddress, ownerAddress, web3.utils.toHex(10000000000000000000));
     // console.log(txHash);
 
     // transfer
-    // let txHash = await transfer('tokens/OMG.json', omgContractAddress, ownerAddress, 30);
+    // let txHash = await transfer('tokens/OMG.json', omgContractAddress, ownerAddress, ownerPrivateKey, address, web3.utils.toHex(1000000000000000000));
     // console.log(txHash);
 
     // tootalSupply
@@ -401,11 +401,11 @@ async function start() {
 
     /* ------- DEX methods ------ */
     // approve
-    // let txHash = await approve('tokens/OMG.json', omgContractAddress, ownerAddress, 1000);
+    // let txHash = await approve('tokens/OMG.json', omgContractAddress, address, privateKey, omgWContractAddress, web3.utils.toHex(1000000000000000000));
     // console.log(txHash);
 
     // deposite
-    // let txHash = await deposit('tokens/ETHW.json', ethWContractAddress, 0.02e18, 24);
+    // let txHash = await deposit('tokens/OMGW.json', omgWContractAddress, address, privateKey, web3.utils.toHex(500000000000000000), 24);
     // console.log(txHash);
 
     // withdraw
