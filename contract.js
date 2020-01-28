@@ -239,13 +239,13 @@ async function deposit(contractFile, contractAddress, fromAddress, fromPrivKey, 
     }
 }
 
-async function withdraw(contractFile, contractAddress, amountToWithdraw, v, r, s, signatureValidUntilBlock) {
+async function withdraw(contractFile, contractAddress, fromAddress, fromPrivKey, amountToWithdraw, v, r, s, signatureValidUntilBlock) {
     try {
-        const count = await getNonce(address);
-        const privateKeyBytes = new Buffer.from(privateKey, 'hex');
+        const count = await getNonce(fromAddress);
+        const privateKeyBytes = new Buffer.from(fromPrivKey, 'hex');
         const obj = JSON.parse(fs.readFileSync(contractFile, 'utf8'));
         const contract = new web3.eth.Contract(obj.abi, contractAddress, {
-            from: address
+            from: fromAddress
         }).methods.withdraw(
             web3.utils.toHex(amountToWithdraw), 
             v,
@@ -253,10 +253,10 @@ async function withdraw(contractFile, contractAddress, amountToWithdraw, v, r, s
             s,
             web3.utils.toHex(signatureValidUntilBlock));
 
-        const gasLimit = parseInt(await contract.estimateGas({from: address}) * 1.5);
+        const gasLimit = parseInt(await contract.estimateGas({from: fromAddress}) * 1.5);
         const gasPrice = parseInt(await web3.eth.getGasPrice() * 1.5);
         var rawTransaction = {
-            "from":address,
+            "from":fromAddress,
             "gasPrice":web3.utils.toHex(gasPrice),
             "gasLimit":web3.utils.toHex(gasLimit),
             "to":contractAddress,
@@ -392,7 +392,7 @@ async function start() {
     // console.log(supply)
     
     // getBalance
-    // let balance = await balanceOf('tokens/OMG.json', omgContractAddress, address);
+    // let balance = await balanceOf('tokens/OMGW.json', omgWContractAddress, address);
     // console.log(balance);
 
     // getNonce
@@ -405,13 +405,21 @@ async function start() {
     // console.log(txHash);
 
     // deposite
-    // let txHash = await deposit('tokens/OMGW.json', omgWContractAddress, address, privateKey, web3.utils.toHex(500000000000000000), 24);
+    // let txHash = await deposit('tokens/OMGW.json', omgWContractAddress, address, privateKey, web3.utils.toHex(300000000000000000), 24);
     // console.log(txHash);
 
     // withdraw
-    // let txHash = await withdraw('tokens/ETHW.json', ethWContractAddress, 
-    //     0.1e18, '0x25', '0x8b5560938cd63fcc85d21e13711646966c7b818b7d89f5e5d8253abab8e8e931', 
-    //     '0x73f19e2742ed5021ec9b0f688764c1f9adf0b2acab16430f54c2347277ed2288', 100);
+    // const message = web3.utils.soliditySha3(address, omgWContractAddress, 10000);
+    // console.log(message);
+    // var signature = await web3.eth.accounts.sign(message, '0x' + ownerPrivateKey);
+    // console.log(signature);
+
+    // var r = web3.utils.hexToBytes(signature.r);
+    // var s = web3.utils.hexToBytes(signature.s);
+    // var v = web3.utils.toHex(signature.v);
+
+    // let txHash = await withdraw('tokens/OMGW.json', omgWContractAddress, address, privateKey,
+    //     web3.utils.toHex(100000000000000000), v, r, s, 10000);
     // console.log(txHash);
 }
 
